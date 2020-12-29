@@ -9,7 +9,7 @@ export interface UserInterface {
 }
 type UserCreationAttributes = Optional<UserInterface, 'id'>;
 
-export class User
+export default class User
   extends Model<UserInterface, UserCreationAttributes>
   implements UserInterface {
   public id!: number;
@@ -24,6 +24,7 @@ export class User
   public readonly updatedAt!: Date;
   public readonly deletedAt!: Date;
   public static initialize() {
+    console.info("Initializing User model");
     const sequelize = DatabaseClient.defaultClient();
     User.init(
       {

@@ -1,21 +1,13 @@
 import {ApolloServer, gql} from "apollo-server";
 import * as fs from "fs";
-import "reflect-metadata";
-import {buildSchemaSync} from "type-graphql";
-import {BookResolver} from "./graphql/schema/BookResolver";
-
+import {BookResolver} from "./graphql/resolvers/bookResolver";
 export class ServerInitializer {
     private static resolvers: any;
     private static typeDefs: any;
-    private static books: Array<any>;
-    private static authors: Array<any>;
     public static start() {
-        const schema =  buildSchemaSync({
-            resolvers: [BookResolver]
-        });
-
-        console.log(schema);
-        const server = new ApolloServer({schema: schema, playground: true });
+        this.loadGraphqlSchema();
+        this.initResolvers();
+        const server = new ApolloServer({ typeDefs: this.typeDefs, resolvers: this.resolvers, debug: false, context: ({req}) => ( {req: req}) });
         // The `listen` method launches a web server.
         server.listen().then(({ url }) => {
             console.log(`🚀  Server ready at ${url}`);
@@ -33,32 +25,8 @@ export class ServerInitializer {
     }
 
     private static initResolvers() {
-        this.resolvers = {
-            Query: {
-                books: () => this.books,
-                authors: () => this.authors,
-                users: (parent: any, args: any, context: any, info: any) => {
-                    // console.log(parent, args, context, info);
-                    return [{
-                        name: "User"
-                    }];
-
-                }
-            },
-
-            Mutation: {
-                addBook: (parent: any, args: any, context: any, info: any) => {
-                    let book = {
-                        title: args["book"]["title"],
-                        author: {
-                            name: args["book"]["author"]
-                        }
-                    }
-                    this.books.push(book);
-                    return book;
-                }
-            }
-        };
+        let bookResolver1 = new BookResolver();
+        this.resolvers = [bookResolver1.initialize()];
     }
 }
 

@@ -1,31 +1,34 @@
 type Book {
-    title: String
+    id: Int!
+    title: String!
+    authorId: Int!
     author: Author
 }
 
 type Author {
-    name: String
+    name: String!
     books: [Book]
 }
 
 type User {
-    name: String
+    name: String!
 }
 
 type Query {
-    books: [Book]
+    books: [Book!]!
     authors: [Author]
     users: [User]
     author: Author
+    book(id: Int!): Book!
 }
 
 type Mutation {
-    addBook(book: BookInput): Book
+    addBook(book: BookInput!): Book!
 }
 
 input BookInput {
-    title: String
-    authorId: Int
+    title: String!
+    authorId: Int!
 }
 
 query GetBooksAndAuthors {

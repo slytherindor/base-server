@@ -1,5 +1,8 @@
 import {ApolloServer, gql} from "apollo-server";
 import * as fs from "fs";
+import "reflect-metadata";
+import {buildSchemaSync} from "type-graphql";
+import {BookResolver} from "./graphql/schema/BookResolver";
 
 export class ServerInitializer {
     private static resolvers: any;
@@ -7,9 +10,12 @@ export class ServerInitializer {
     private static books: Array<any>;
     private static authors: Array<any>;
     public static start() {
-        this.loadGraphqlSchema();
-        this.initResolvers();
-        const server = new ApolloServer({ typeDefs: this.typeDefs, resolvers: this.resolvers, debug: false });
+        const schema =  buildSchemaSync({
+            resolvers: [BookResolver]
+        });
+
+        console.log(schema);
+        const server = new ApolloServer({schema: schema, playground: true });
         // The `listen` method launches a web server.
         server.listen().then(({ url }) => {
             console.log(`🚀  Server ready at ${url}`);

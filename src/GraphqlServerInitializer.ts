@@ -1,10 +1,12 @@
 import {ApolloServer, gql} from 'apollo-server';
 import * as fs from 'fs';
 import {BookGqlEndpoint} from './graphql/endpoints/bookGqlEndpoint';
-export class ServerInitializer {
+
+export class GraphqlServerInitializer {
   private static resolvers: any;
   private static typeDefs: any;
-  public static start() {
+
+  public static startGraphqlServer() {
     this.loadGraphqlSchema();
     this.initResolvers();
     const server = new ApolloServer({
@@ -18,6 +20,7 @@ export class ServerInitializer {
       console.log(`🚀  Server ready at ${url}`);
     });
   }
+
   private static loadGraphqlSchema(): void {
     try {
       this.typeDefs = gql(

@@ -1,6 +1,6 @@
 import {ApolloServer, gql} from "apollo-server";
 import * as fs from "fs";
-import {BookResolver} from "./graphql/resolvers/bookResolver";
+import {BookGqlEndpoint} from "./graphql/endpoints/bookGqlEndpoint";
 export class ServerInitializer {
     private static resolvers: any;
     private static typeDefs: any;
@@ -25,8 +25,8 @@ export class ServerInitializer {
     }
 
     private static initResolvers() {
-        let bookResolver1 = new BookResolver();
-        this.resolvers = [bookResolver1.initialize()];
+        let bookGqlEndpoint = new BookGqlEndpoint();
+        this.resolvers = [bookGqlEndpoint.initialize()];
     }
 }
 

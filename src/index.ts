@@ -1,17 +1,15 @@
 import {StorageInitializer} from './database/StorageInitializer';
 import {ServerInitializer} from './ServerInitializer';
 
-function run(): Promise<void> {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      await StorageInitializer.start();
-      ServerInitializer.start();
+async function run(): Promise<void> {
+  try {
+    await StorageInitializer.start();
+    await ServerInitializer.start();
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
 }
 
-run().then(r => console.log('Successfully started everything'));
+run().then(() => console.log('Successfully started everything'));

@@ -1,21 +1,15 @@
-import {BookRepository} from "../../repositories/BookRepository";
 import Author from "../../database/models/Author";
-import User from "../../database/models/User";
 import {
-    GQLBookInput,
-    GQLBookResolvers,
-    GQLMutation,
     GQLMutationAddBookArgs,
     GQLQueryBookArgs,
     GQLResolvers,
-    GQLResolversTypes,
     GQLBook,
     GQLAuthor,
 } from "../../generated/schema";
 import Book, {BookInterface} from "../../database/models/Book";
-import {GraphQLScalarType} from "graphql";
+import {GetBookByIdQueryResolver} from "../resolvers/book/bookResolver";
 
-export class BookResolver {
+export class BookGqlEndpoint {
     public bookResolvers!: GQLResolvers;
 
     public initialize(): GQLResolvers {
@@ -45,8 +39,10 @@ export class BookResolver {
     }
 
     private getBookById(parent: any, args: GQLQueryBookArgs, context: any, info: any): Promise<BookInterface> {
-        return Book.findByPk(args.id, {rejectOnEmpty: true});
+        // return Book.findByPk(args.id, {rejectOnEmpty: true});
+        return new GetBookByIdQueryResolver(parent, args, context, info).execute();
     }
+
 
     private async titleResolver(args: GQLBook, parent: any, context: any, info: any): Promise<string> {
         return args.title;

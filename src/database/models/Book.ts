@@ -43,7 +43,6 @@ export default class Book extends Model<BookInterface, BookCreationAttributes> i
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                allowNull: false
             },
             title: DataTypes.STRING,
             authorId: {

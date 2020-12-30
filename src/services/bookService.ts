@@ -1,11 +1,11 @@
 import Book, {BookInterface} from '../database/models/Book';
-import {FindOptions, Model, WhereOptions} from 'sequelize';
+import {FindOptions, WhereOptions} from 'sequelize';
 
 abstract class AbstractBookRepository {
   abstract add(title: string, authorId: number): Promise<BookInterface>;
   abstract get(bookId: number): Promise<BookInterface>;
   abstract remove(bookId: number): Promise<Boolean>;
-  abstract list(options: any): Promise<BookInterface[]>;
+  abstract list(options: {}): Promise<BookInterface[]>;
 }
 
 export class SeqeulizeBookRepository implements AbstractBookRepository {

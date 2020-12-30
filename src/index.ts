@@ -9,7 +9,6 @@ async function run(): Promise<void> {
     console.error(e);
     throw e;
   }
-
 }
 
 run().then(() => console.log('Successfully started everything'));

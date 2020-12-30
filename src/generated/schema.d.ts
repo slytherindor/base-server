@@ -1,9 +1,14 @@
-import { GraphQLResolveInfo } from 'graphql';
+import {GraphQLResolveInfo} from 'graphql';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
+export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  {[SubKey in K]?: Maybe<T[SubKey]>};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+  {[SubKey in K]: Maybe<T[SubKey]>};
+export type RequireFields<T, K extends keyof T> = {
+  [X in Exclude<keyof T, K>]?: T[X];
+} &
+  {[P in K]-?: NonNullable<T[P]>};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -41,7 +46,6 @@ export type GQLQuery = {
   book: GQLBook;
 };
 
-
 export type GQLQueryBookArgs = {
   id: Scalars['Int'];
 };
@@ -50,7 +54,6 @@ export type GQLMutation = {
   __typename?: 'Mutation';
   addBook: GQLBook;
 };
-
 
 export type GQLMutationAddBookArgs = {
   book: GQLBookInput;
@@ -66,7 +69,6 @@ export type ResolversObject<TObject> = WithIndex<TObject>;
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
-
 export type LegacyStitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string;
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
@@ -76,7 +78,9 @@ export type NewStitchingResolver<TResult, TParent, TContext, TArgs> = {
   selectionSet: string;
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
 };
-export type StitchingResolver<TResult, TParent, TContext, TArgs> = LegacyStitchingResolver<TResult, TParent, TContext, TArgs> | NewStitchingResolver<TResult, TParent, TContext, TArgs>;
+export type StitchingResolver<TResult, TParent, TContext, TArgs> =
+  | LegacyStitchingResolver<TResult, TParent, TContext, TArgs>
+  | NewStitchingResolver<TResult, TParent, TContext, TArgs>;
 export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
   | ResolverFn<TResult, TParent, TContext, TArgs>
   | StitchingResolver<TResult, TParent, TContext, TArgs>;
@@ -102,9 +106,25 @@ export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
-export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
-  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
-  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
+export interface SubscriptionSubscriberObject<
+  TResult,
+  TKey extends string,
+  TParent,
+  TContext,
+  TArgs
+> {
+  subscribe: SubscriptionSubscribeFn<
+    {[key in TKey]: TResult},
+    TParent,
+    TContext,
+    TArgs
+  >;
+  resolve?: SubscriptionResolveFn<
+    TResult,
+    {[key in TKey]: TResult},
+    TContext,
+    TArgs
+  >;
 }
 
 export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
@@ -112,12 +132,26 @@ export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
   resolve: SubscriptionResolveFn<TResult, any, TContext, TArgs>;
 }
 
-export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, TArgs> =
+export type SubscriptionObject<
+  TResult,
+  TKey extends string,
+  TParent,
+  TContext,
+  TArgs
+> =
   | SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
   | SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
 
-export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TContext = {}, TArgs = {}> =
-  | ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
+export type SubscriptionResolver<
+  TResult,
+  TKey extends string,
+  TParent = {},
+  TContext = {},
+  TArgs = {}
+> =
+  | ((
+      ...args: any[]
+    ) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
   | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
 
 export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
@@ -126,11 +160,20 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type IsTypeOfResolverFn<T = {}, TContext = {}> = (obj: T, context: TContext, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
+export type IsTypeOfResolverFn<T = {}, TContext = {}> = (
+  obj: T,
+  context: TContext,
+  info: GraphQLResolveInfo
+) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
-export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs = {}> = (
+export type DirectiveResolverFn<
+  TResult = {},
+  TParent = {},
+  TContext = {},
+  TArgs = {}
+> = (
   next: NextResolverFn<TResult>,
   parent: TParent,
   args: TArgs,
@@ -164,35 +207,80 @@ export type GQLResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'];
 }>;
 
-export type GQLBookResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Book'] = GQLResolversParentTypes['Book']> = ResolversObject<{
+export type GQLBookResolvers<
+  ContextType = any,
+  ParentType extends GQLResolversParentTypes['Book'] = GQLResolversParentTypes['Book']
+> = ResolversObject<{
   id?: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   title?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   authorId?: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
-  author?: Resolver<Maybe<GQLResolversTypes['Author']>, ParentType, ContextType>;
+  author?: Resolver<
+    Maybe<GQLResolversTypes['Author']>,
+    ParentType,
+    ContextType
+  >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type GQLAuthorResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Author'] = GQLResolversParentTypes['Author']> = ResolversObject<{
+export type GQLAuthorResolvers<
+  ContextType = any,
+  ParentType extends GQLResolversParentTypes['Author'] = GQLResolversParentTypes['Author']
+> = ResolversObject<{
   name?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
-  books?: Resolver<Maybe<Array<Maybe<GQLResolversTypes['Book']>>>, ParentType, ContextType>;
+  books?: Resolver<
+    Maybe<Array<Maybe<GQLResolversTypes['Book']>>>,
+    ParentType,
+    ContextType
+  >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type GQLUserResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['User'] = GQLResolversParentTypes['User']> = ResolversObject<{
+export type GQLUserResolvers<
+  ContextType = any,
+  ParentType extends GQLResolversParentTypes['User'] = GQLResolversParentTypes['User']
+> = ResolversObject<{
   name?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = ResolversObject<{
+export type GQLQueryResolvers<
+  ContextType = any,
+  ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']
+> = ResolversObject<{
   books?: Resolver<Array<GQLResolversTypes['Book']>, ParentType, ContextType>;
-  authors?: Resolver<Maybe<Array<Maybe<GQLResolversTypes['Author']>>>, ParentType, ContextType>;
-  users?: Resolver<Maybe<Array<Maybe<GQLResolversTypes['User']>>>, ParentType, ContextType>;
-  author?: Resolver<Maybe<GQLResolversTypes['Author']>, ParentType, ContextType>;
-  book?: Resolver<GQLResolversTypes['Book'], ParentType, ContextType, RequireFields<GQLQueryBookArgs, 'id'>>;
+  authors?: Resolver<
+    Maybe<Array<Maybe<GQLResolversTypes['Author']>>>,
+    ParentType,
+    ContextType
+  >;
+  users?: Resolver<
+    Maybe<Array<Maybe<GQLResolversTypes['User']>>>,
+    ParentType,
+    ContextType
+  >;
+  author?: Resolver<
+    Maybe<GQLResolversTypes['Author']>,
+    ParentType,
+    ContextType
+  >;
+  book?: Resolver<
+    GQLResolversTypes['Book'],
+    ParentType,
+    ContextType,
+    RequireFields<GQLQueryBookArgs, 'id'>
+  >;
 }>;
 
-export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = ResolversObject<{
-  addBook?: Resolver<GQLResolversTypes['Book'], ParentType, ContextType, RequireFields<GQLMutationAddBookArgs, 'book'>>;
+export type GQLMutationResolvers<
+  ContextType = any,
+  ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']
+> = ResolversObject<{
+  addBook?: Resolver<
+    GQLResolversTypes['Book'],
+    ParentType,
+    ContextType,
+    RequireFields<GQLMutationAddBookArgs, 'book'>
+  >;
 }>;
 
 export type GQLResolvers<ContextType = any> = ResolversObject<{
@@ -202,5 +290,3 @@ export type GQLResolvers<ContextType = any> = ResolversObject<{
   Query?: GQLQueryResolvers<ContextType>;
   Mutation?: GQLMutationResolvers<ContextType>;
 }>;
-
-

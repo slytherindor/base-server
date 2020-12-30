@@ -1,57 +1,77 @@
-import Author from "../../database/models/Author";
+import Author from '../../database/models/Author';
 import {
-    GQLMutationAddBookArgs,
-    GQLQueryBookArgs,
-    GQLResolvers,
-    GQLBook,
-    GQLAuthor,
-} from "../../generated/schema";
-import Book, {BookInterface} from "../../database/models/Book";
-import {GetBookByIdQueryResolver} from "../resolvers/book/bookResolver";
+  GQLMutationAddBookArgs,
+  GQLQueryBookArgs,
+  GQLResolvers,
+  GQLBook,
+  GQLAuthor,
+} from '../../generated/schema';
+import Book, {BookInterface} from '../../database/models/Book';
+import {GetBookByIdQueryResolver} from '../resolvers/book/bookResolver';
 
 export class BookGqlEndpoint {
-    public bookResolvers!: GQLResolvers;
+  public bookResolvers!: GQLResolvers;
 
-    public initialize(): GQLResolvers {
-        this.bookResolvers = {
-            Query: {
-                books: this.getBooks,
-                book: this.getBookById
-            },
-            Mutation: {
-                addBook: this.addBook
-            },
-            Book: {
-                title: this.titleResolver,
-                author: this.bookAuthorResolver,
+  public initialize(): GQLResolvers {
+    this.bookResolvers = {
+      Query: {
+        books: this.getBooks,
+        book: this.getBookById,
+      },
+      Mutation: {
+        addBook: this.addBook,
+      },
+      Book: {
+        title: this.titleResolver,
+        author: this.bookAuthorResolver,
+      },
+    };
+    return this.bookResolvers;
+  }
 
-            }
-        }
-        return this.bookResolvers;
-    }
+  private getBooks(
+    parent: any,
+    args: any,
+    context: any,
+    info: any
+  ): Promise<BookInterface[]> {
+    return Book.findAll({include: Book.associations.author});
+  }
 
-    private getBooks(parent: any, args: any, context: any, info: any): Promise<BookInterface[]> {
-        return Book.findAll({include: Book.associations.author})
-    }
+  private addBook(
+    parent: any,
+    args: GQLMutationAddBookArgs,
+    context: any,
+    info: any
+  ): Promise<BookInterface> {
+    return Book.create(args.book);
+  }
 
-    private addBook(parent: any, args: GQLMutationAddBookArgs, context: any, info: any): Promise<BookInterface> {
-        return Book.create(args.book);
-    }
+  private getBookById(
+    parent: any,
+    args: GQLQueryBookArgs,
+    context: any,
+    info: any
+  ): Promise<BookInterface> {
+    // return Book.findByPk(args.id, {rejectOnEmpty: true});
+    return new GetBookByIdQueryResolver(parent, args, context, info).execute();
+  }
 
-    private getBookById(parent: any, args: GQLQueryBookArgs, context: any, info: any): Promise<BookInterface> {
-        // return Book.findByPk(args.id, {rejectOnEmpty: true});
-        return new GetBookByIdQueryResolver(parent, args, context, info).execute();
-    }
+  private async titleResolver(
+    args: GQLBook,
+    parent: any,
+    context: any,
+    info: any
+  ): Promise<string> {
+    return args.title;
+  }
 
-
-    private async titleResolver(args: GQLBook, parent: any, context: any, info: any): Promise<string> {
-        return args.title;
-
-    }
-
-    private async bookAuthorResolver(book: GQLBook, parent: any, context: any, info: any): Promise<GQLAuthor> {
-        return Author.findByPk(book.authorId, {rejectOnEmpty: true});
-    }
-
-
+  private async bookAuthorResolver(
+    book: GQLBook,
+    parent: any,
+    context: any,
+    info: any
+  ): Promise<GQLAuthor> {
+    return Author.findByPk(book.authorId, {rejectOnEmpty: true});
+  }
 }

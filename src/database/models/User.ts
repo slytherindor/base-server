@@ -24,7 +24,7 @@ export default class User
   public readonly updatedAt!: Date;
   public readonly deletedAt!: Date;
   public static initialize() {
-    console.info("Initializing User model");
+    console.info('Initializing User model');
     const sequelize = DatabaseClient.defaultClient();
     User.init(
       {

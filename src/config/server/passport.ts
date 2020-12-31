@@ -21,10 +21,6 @@ passport.deserializeUser((id: number | string, done) => {
 });
 
 passport.use('login-local', new LocalStrategy(AuthService.verifyLoginFunc));
-passport.use(
-  'register-local',
-  new Strategy({usernameField: 'email'}, AuthService.verifyRegisterFunc)
-);
 
 /**
  * Login Required middleware.

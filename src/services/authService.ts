@@ -65,7 +65,6 @@ export class AuthService {
         done(null, false, {message: 'Incorrect username'});
         return;
       }
-      //TODO: Check for password validity here
       if (await user.userCredential!.validPassword(password)) {
         done(null, false, {message: 'Incorrect password'});
         return;
@@ -84,6 +83,7 @@ export class AuthService {
     try {
       return await new SequelizeUserRepository().createUser(user, credential);
     } catch (e) {
+      console.error(e);
       throw new AuthServiceError('Failed to register user.');
     }
   }

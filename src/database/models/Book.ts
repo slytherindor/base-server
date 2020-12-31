@@ -1,15 +1,14 @@
 import {
+  Association,
+  BelongsToCreateAssociationMixin,
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
   DataTypes,
   Model,
   Optional,
-  BelongsToGetAssociationMixin,
-  Association,
-  BelongsToSetAssociationMixin,
-  BelongsToCreateAssociationMixin,
 } from 'sequelize';
 import {DatabaseClient} from '../client';
 import Author from './Author';
-import User from './User';
 
 export interface BookInterface {
   id: number;
@@ -34,7 +33,7 @@ export default class Book
   public addAuthor!: BelongsToSetAssociationMixin<Author, number>;
   public createAuthor!: BelongsToCreateAssociationMixin<Author>;
   public static associations: {
-    author: Association<User, Author>;
+    author: Association<Book, Author>;
   };
 
   public static initialize() {

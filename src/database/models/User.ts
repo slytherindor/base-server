@@ -1,5 +1,14 @@
-import {DataTypes, Model, Optional} from 'sequelize';
+import {
+  Association,
+  DataTypes,
+  HasOneCreateAssociationMixin,
+  HasOneGetAssociationMixin,
+  HasOneSetAssociationMixin,
+  Model,
+  Optional,
+} from 'sequelize';
 import {DatabaseClient} from '../client';
+import UserCredential from './UserCredential';
 
 export interface UserInterface {
   id: number;
@@ -16,6 +25,11 @@ export default class User
   public firstName!: string;
   public lastName!: string;
   public email!: string;
+  public readonly userCredential?: UserCredential;
+
+  public getCredential!: HasOneGetAssociationMixin<UserCredential>;
+  public createCredential!: HasOneCreateAssociationMixin<UserCredential>;
+  public addCredential!: HasOneSetAssociationMixin<UserCredential, number>;
   /*
    * Following timestamps don't need to be initialized in model
    * They have to part of migration though.
@@ -23,6 +37,11 @@ export default class User
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
   public readonly deletedAt!: Date;
+
+  public static associations: {
+    userCredential: Association<User, UserCredential>;
+  };
+
   public static initialize() {
     console.info('Initializing User model');
     const sequelize = DatabaseClient.defaultClient();
@@ -44,5 +63,13 @@ export default class User
         timestamps: true,
       }
     );
+  }
+
+  public static associate() {
+    User.hasOne(UserCredential, {
+      foreignKey: 'userId',
+      sourceKey: 'id',
+      as: 'userCredential',
+    });
   }
 }

@@ -1,5 +1,5 @@
-import {SchemaRegistrar} from './SchemaRegistrar';
 import {MigrationManager} from './MigrationManager';
+import {SchemaRegistrar} from './SchemaRegistrar';
 
 export class StorageInitializer {
   public static async start(): Promise<void> {

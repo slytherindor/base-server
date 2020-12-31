@@ -6,7 +6,8 @@
     "skipLibCheck": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": ["es2018", "esnext.asynciterable"]
+    "lib": ["es2018", "esnext.asynciterable"],
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src/**/*.ts",

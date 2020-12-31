@@ -1,5 +1,5 @@
+import {SequelizeStorage, Umzug} from 'umzug';
 import {DatabaseClient} from './client';
-import {Umzug, SequelizeStorage} from 'umzug';
 
 const sequelize = DatabaseClient.defaultClient();
 export const migrator = new Umzug({

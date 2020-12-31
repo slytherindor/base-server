@@ -1,5 +1,5 @@
-import Book, {BookInterface} from '../database/models/Book';
 import {FindOptions, WhereOptions} from 'sequelize';
+import Book, {BookInterface} from '../database/models/Book';
 
 abstract class AbstractBookRepository {
   abstract add(title: string, authorId: number): Promise<BookInterface>;

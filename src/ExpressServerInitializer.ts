@@ -1,60 +1,59 @@
-import * as express from 'express';
-const session = require("express-session");
-const bodyParser = require("body-parser");
-import * as passport from "passport";
-import {Strategy} from "passport-local";
+import {Application} from 'express';
+import * as passport from 'passport';
+import * as userAuthRoutes from './routeHandlers/userAuth';
+
+const express = require('express');
+
+const session = require('express-session');
+const bodyParser = require('body-parser');
 const flash = require('connect-flash');
-import {AuthService, SequelizeUserRepository} from "./services/authService";
+declare module 'express-session' {
+  interface Session {
+    returnTo: string;
+  }
+}
 
 export class ExpressServerInitializer {
-    private static passport: passport.PassportStatic = passport;
-    public static startExpressServer() {
-        const expressServer: express.Application = express();
-        this.setupPassport();
-        expressServer.use(express.static("public"));
-        expressServer.use(session({secret: "cats"}));
-        expressServer.use(bodyParser.urlencoded({extended: false}));
-        expressServer.use(passport.initialize());
-        expressServer.use(passport.session());
-        expressServer.use(flash());
-        this.setupExpressServerRoutes(expressServer);
-        const port = 3000;
-        expressServer.listen(port, () => {
-            console.log(`🚀  Server ready at ${port}`);
-        });
-    }
+  public static startExpressServer() {
+    const app: Application = express();
+    app.use(express.static('public'));
+    app.use(session({secret: 'cats', resave: true, saveUninitialized: true}));
+    app.use(bodyParser.urlencoded({extended: false}));
+    app.use(passport.initialize());
+    app.use(passport.session());
+    app.use(flash());
+    app.use((req, res, next) => {
+      // After successful login, redirect back to the intended page
+      if (
+        !req.user &&
+        req.path !== '/login' &&
+        req.path !== '/signup' &&
+        !req.path.match(/^\/auth/) &&
+        !req.path.match(/\./)
+      ) {
+        req.session.returnTo = req.path;
+      } else if (req.user && req.path === '/account') {
+        req.session.returnTo = req.path;
+      }
+      next();
+    });
 
-    private static setupPassport() {
-        let authService: AuthService = new AuthService(new SequelizeUserRepository());
-        this.passport.serializeUser(function(user, done) {
-            done(null, user);
-        });
+    this.setupExpressServerRoutes(app);
+    const port = 3000;
+    app.listen(port, () => {
+      console.log(`🚀  Server ready at ${port}`);
+    });
+  }
 
-        this.passport.deserializeUser(function(id, done) {
-            done(null, { id: 1, email: "ryan.cyrus@live.com"});
-        });
-        this.passport.use(new Strategy(authService.verifyFunc));
-    }
-    private static setupExpressServerRoutes(server: express.Application): void {
-        server.post("/login", passport.authenticate('local', {
-            successRedirect: "/",
-            failureRedirect: "/login",
-            failureFlash: "Incorrect Username or password",
-            successFlash: "Login succeeded"
-        }), (req, res) => {
-            res.redirect("/");
-        });
+  private static setupExpressServerRoutes(server: Application): void {
+    server.post('/signup', userAuthRoutes.postRegister);
+    server.get('/', (req, res) => {
+      res.send('Hello');
+    });
 
-        server.get('/',
-            function(req, res) {
-                res.send( { user: req.user });
-            });
-
-        server.get('/login',
-            function(req, res){
-                res.send('login');
-            });
-
-    }
-
+    server.get('/login', (req, res) => {
+      console.log('fnfoiwe');
+      res.send('login');
+    });
+  }
 }

@@ -1,9 +1,9 @@
+import {BookInterface} from '../../../database/models/Book';
+import {GQLBook, GQLQueryBookArgs} from '../../../generated/schema';
 import {
   BookService,
   SeqeulizeBookRepository,
 } from '../../../services/bookService';
-import {GQLBook, GQLQueryBookArgs} from '../../../generated/schema';
-import {BookInterface} from '../../../database/models/Book';
 
 abstract class AbstractClassQueryResolver<T> {
   abstract execute(): Promise<T>;

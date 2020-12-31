@@ -1,12 +1,12 @@
 import Author from '../../database/models/Author';
+import Book, {BookInterface} from '../../database/models/Book';
 import {
+  GQLAuthor,
+  GQLBook,
   GQLMutationAddBookArgs,
   GQLQueryBookArgs,
   GQLResolvers,
-  GQLBook,
-  GQLAuthor,
 } from '../../generated/schema';
-import Book, {BookInterface} from '../../database/models/Book';
 import {GetBookByIdQueryResolver} from '../resolvers/book/bookResolver';
 
 export class BookGqlEndpoint {

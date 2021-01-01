@@ -1,16 +1,12 @@
 import {StorageInitializer} from './database/StorageInitializer';
 import {ExpressServerInitializer} from './ExpressServerInitializer';
 import {GraphqlServerInitializer} from './GraphqlServerInitializer';
-
+import logger from './utils/logger';
 async function run(): Promise<void> {
-  try {
+    logger.info('Starting the server.');
     await StorageInitializer.start();
+    ExpressServerInitializer.start(3000);
     GraphqlServerInitializer.startGraphqlServer();
-    ExpressServerInitializer.startExpressServer();
-  } catch (e) {
-    console.error(e);
-    throw e;
-  }
 }
 
-run().then(() => console.log('Successfully started everything'));
+run().then(() => logger.info('Successfully started server'));

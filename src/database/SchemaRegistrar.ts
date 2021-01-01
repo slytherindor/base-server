@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as Path from 'path';
+import logger from '../utils/logger';
 
 export class SchemaRegistrar {
   models: string[];
@@ -7,24 +8,35 @@ export class SchemaRegistrar {
     this.models = [];
   }
   public initializeSchema() {
-    fs.readdirSync(`${__dirname}/models`).forEach((file: string) => {
-      if (Path.extname(file) === '.js') {
-        this.models.push(file);
-      }
-    });
+    logger.info('SchemaRegistrar: Initializing sequelize models');
+    try {
+      fs.readdirSync(`${__dirname}/models`).forEach((file: string) => {
+        if (Path.extname(file) === '.js') {
+          this.models.push(file);
+        }
+      });
 
-    this.models.forEach((model: string) => {
-      const mod = require(Path.join(`${__dirname}/models`, model));
-      mod.default.initialize();
-    });
+      this.models.forEach((model: string) => {
+        const sequelizeModel = require(Path.join(`${__dirname}/models`, model));
+        sequelizeModel.default.initialize();
+      });
+    } catch (e) {
+      logger.error('Failed to initialize sequelize models.');
+      throw e;
+    }
   }
 
   public establishAssociations() {
-    this.models.forEach((model: string) => {
-      const mod = require(Path.join(`${__dirname}/models`, model));
-      if (mod.default.associate) {
-        mod.default.associate();
-      }
-    });
+    try {
+      this.models.forEach((model: string) => {
+        const sequelizeModel = require(Path.join(`${__dirname}/models`, model));
+        if (sequelizeModel.default.associate) {
+          sequelizeModel.default.associate();
+        }
+      });
+    } catch (e) {
+      logger.error('Failed to initialize associations for sequelize models.');
+      throw e;
+    }
   }
 }

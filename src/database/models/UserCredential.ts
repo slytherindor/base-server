@@ -1,4 +1,5 @@
 import {DataTypes, Model, Optional} from 'sequelize';
+import logger from '../../utils/logger';
 import {DatabaseClient} from '../client';
 import User from './User';
 const bcrypt = require('bcrypt');
@@ -25,7 +26,7 @@ export default class UserCredential
   public readonly updatedAt!: Date;
   public readonly deletedAt!: Date;
   public static initialize() {
-    console.info('Initializing User model');
+    logger.info('UserCredential: Initializing model');
     const sequelize = DatabaseClient.defaultClient();
     UserCredential.init(
       {
@@ -68,7 +69,9 @@ export default class UserCredential
   }
 
   public static encryptCredential(enteredCredential: string): Promise<string> {
-    const salt = process.env.CREDSALT ? process.env.CREDSALT : '$2a$10$6IIEKeb5QQrYXL3txzIjYO';
+    const salt = process.env.CREDSALT
+      ? process.env.CREDSALT
+      : '$2a$10$6IIEKeb5QQrYXL3txzIjYO';
     return bcrypt.hash(enteredCredential, salt);
   }
 

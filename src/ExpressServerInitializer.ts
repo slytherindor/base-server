@@ -1,6 +1,7 @@
 import {Application} from 'express';
 import * as passport from 'passport';
 import * as userAuthRoutes from './routeHandlers/AuthRoutesHandlers';
+import logger from "./utils/logger";
 
 const express = require('express');
 
@@ -14,15 +15,18 @@ declare module 'express-session' {
 }
 
 export class ExpressServerInitializer {
-  public static startExpressServer() {
-    const app: Application = express();
-    app.use(express.static('public'));
-    app.use(session({secret: 'cats', resave: true, saveUninitialized: true}));
-    app.use(bodyParser.urlencoded({extended: false}));
-    app.use(passport.initialize());
-    app.use(passport.session());
-    app.use(flash());
-    app.use((req, res, next) => {
+  public static app: Application;
+  private static configExpressServer() {
+    logger.info("ExpressServerInitializer: Configuring server");
+    this.app = express();
+    this.app.use(express.static('public'));
+    this.app.use(session({secret: 'cats', resave: true, saveUninitialized: true}));
+    this.app.use(bodyParser.urlencoded({extended: false}));
+    this.app.use(bodyParser.json());
+    this.app.use(passport.initialize());
+    this.app.use(passport.session());
+    this.app.use(flash());
+    this.app.use((req, res, next) => {
       // After successful login, redirect back to the intended page
       if (
         !req.user &&
@@ -37,20 +41,23 @@ export class ExpressServerInitializer {
       }
       next();
     });
+  }
 
-    this.setupExpressServerRoutes(app);
-    const port = 3000;
-    app.listen(port, () => {
-      console.log(`🚀  Server ready at ${port}`);
+  private static setupExpressServerRoutes(): void {
+    logger.info("ExpressServerInitializer: Setting up routes on server");
+    this.app.post('/signup', userAuthRoutes.postRegister);
+    this.app.post('/login', userAuthRoutes.postLogin);
+    this.app.get('/login', userAuthRoutes.getLogin);
+    this.app.get('/', (req, res) => {
+      res.send('Hello');
     });
   }
 
-  private static setupExpressServerRoutes(server: Application): void {
-    server.post('/signup', userAuthRoutes.postRegister);
-    server.post('/login', userAuthRoutes.postLogin);
-    server.get('/login', userAuthRoutes.getLogin);
-    server.get('/', (req, res) => {
-      res.send('Hello');
+  public static start(port: number) {
+    this.configExpressServer();
+    this.setupExpressServerRoutes();
+    this.app.listen(port, () => {
+      logger.info(`ExpressServerInitializer: 🚀 Server ready at ${port}`);
     });
   }
 }

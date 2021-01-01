@@ -7,6 +7,7 @@ import {
   Model,
   Optional,
 } from 'sequelize';
+import logger from '../../utils/logger';
 import {DatabaseClient} from '../client';
 import UserCredential from './UserCredential';
 
@@ -43,7 +44,7 @@ export default class User
   };
 
   public static initialize() {
-    console.info('Initializing User model');
+    logger.info('User: Initializing model');
     const sequelize = DatabaseClient.defaultClient();
     User.init(
       {

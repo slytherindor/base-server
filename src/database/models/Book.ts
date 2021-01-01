@@ -7,6 +7,7 @@ import {
   Model,
   Optional,
 } from 'sequelize';
+import logger from '../../utils/logger';
 import {DatabaseClient} from '../client';
 import Author from './Author';
 
@@ -37,7 +38,7 @@ export default class Book
   };
 
   public static initialize() {
-    console.info('Initializing Book model');
+    logger.info('Book: Initializing model');
     const sequelize = DatabaseClient.defaultClient();
     Book.init(
       {

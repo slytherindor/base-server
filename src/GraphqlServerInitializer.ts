@@ -1,6 +1,7 @@
 import {ApolloServer, gql} from 'apollo-server';
 import * as fs from 'fs';
 import {BookGqlEndpoint} from './graphql/endpoints/bookGqlEndpoint';
+import logger from "./utils/logger";
 
 export class GraphqlServerInitializer {
   private static resolvers: any;
@@ -17,22 +18,24 @@ export class GraphqlServerInitializer {
     });
     // The `listen` method launches a web server.
     server.listen().then(({url}) => {
-      console.log(`🚀  Server ready at ${url}`);
+      logger.info(`GraphqlServerInitializer: 🚀  Graphql server ready at ${url}`);
     });
   }
 
   private static loadGraphqlSchema(): void {
+    logger.info('GraphqlServerInitializer: Loading graphql schema');
     try {
       this.typeDefs = gql(
         fs.readFileSync(__dirname.concat('/graphql/schema.graphql'), 'utf8')
       );
     } catch (e) {
-      console.error(e);
+      logger.error('GraphqlServerInitializer: Failed to load graphql schema');
       throw e;
     }
   }
 
   private static initResolvers() {
+    logger.info('GraphqlServerInitializer: Initializing graphql resolvers');
     const bookGqlEndpoint = new BookGqlEndpoint();
     this.resolvers = [bookGqlEndpoint.initialize()];
   }

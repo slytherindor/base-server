@@ -36,6 +36,9 @@ export class SequelizeUserRepository implements AbstractUserRepository {
     try {
       const sequelize = DatabaseClient.defaultClient();
       return sequelize.transaction(async t => {
+        if (await this.findUser(user.email)) {
+          throw new Error("User already exists");
+        }
         const createdUser: User = await User.create(user, {transaction: t});
         await UserCredential.create(
           {userId: createdUser.id, credential: credential},

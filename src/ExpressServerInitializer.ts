@@ -2,6 +2,9 @@ import {Application} from 'express';
 import * as passport from 'passport';
 import * as userAuthRoutes from './routeHandlers/AuthRoutesHandlers';
 import logger from "./utils/logger";
+import {ApolloServer, gql} from "apollo-server-express";
+import * as fs from 'fs';
+import {BookGqlEndpoint} from "./graphql/endpoints/bookGqlEndpoint";
 
 const express = require('express');
 
@@ -56,8 +59,43 @@ export class ExpressServerInitializer {
   public static start(port: number) {
     this.configExpressServer();
     this.setupExpressServerRoutes();
+    this.configGraphqlServer();
     this.app.listen(port, () => {
       logger.info(`ExpressServerInitializer: 🚀 Server ready at ${port}`);
     });
+  }
+
+  private static resolvers: any;
+  private static typeDefs: any;
+
+  public static configGraphqlServer() {
+    this.loadGraphqlSchema();
+    this.initResolvers();
+    const gqlServer = new ApolloServer({
+      typeDefs: this.typeDefs,
+      resolvers: this.resolvers,
+      debug: false,
+      context: ({req}) => ({req: req}),
+    });
+    const app = this.app;
+    gqlServer.applyMiddleware({ app });
+  }
+
+  private static loadGraphqlSchema(): void {
+    logger.info('ExpressServerInitializer: Loading graphql schema');
+    try {
+      this.typeDefs = gql(
+        fs.readFileSync(__dirname.concat('/graphql/schema.graphql'), 'utf8')
+      );
+    } catch (e) {
+      logger.error('ExpressServerInitializer: Failed to load graphql schema');
+      throw e;
+    }
+  }
+
+  private static initResolvers() {
+    logger.info('ExpressServerInitializer: Initializing graphql resolvers');
+    const bookGqlEndpoint = new BookGqlEndpoint();
+    this.resolvers = [bookGqlEndpoint.initialize()];
   }
 }

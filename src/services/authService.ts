@@ -69,7 +69,7 @@ export class AuthService {
         done(null, false, {message: 'Incorrect password'});
         return;
       }
-      done(null, user);
+      done(null, user as UserInterface);
       return;
     } catch (e) {
       return done(e);

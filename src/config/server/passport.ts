@@ -1,12 +1,11 @@
 import {NextFunction, Request, Response} from 'express';
-import passport from 'passport';
-import passportLocal, {Strategy} from 'passport-local';
+import * as passport from 'passport';
+import {Strategy} from 'passport-local';
 import {UserInterface} from '../../database/models/User';
 import {AuthService, SequelizeUserRepository} from '../../services/authService';
 
-const LocalStrategy = passportLocal.Strategy;
-
 passport.serializeUser((user: any, done) => {
+  console.log(user);
   done(undefined, user.id);
 });
 
@@ -20,7 +19,7 @@ passport.deserializeUser((id: number | string, done) => {
     .catch(e => done(e, undefined));
 });
 
-passport.use('login-local', new LocalStrategy(AuthService.verifyLoginFunc));
+passport.use('login-local', new Strategy(AuthService.verifyLoginFunc));
 
 /**
  * Login Required middleware.

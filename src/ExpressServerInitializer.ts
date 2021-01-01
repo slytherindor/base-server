@@ -1,6 +1,6 @@
 import {Application} from 'express';
 import * as passport from 'passport';
-import * as userAuthRoutes from './routeHandlers/userAuth';
+import * as userAuthRoutes from './routeHandlers/AuthRoutesHandlers';
 
 const express = require('express');
 
@@ -47,13 +47,10 @@ export class ExpressServerInitializer {
 
   private static setupExpressServerRoutes(server: Application): void {
     server.post('/signup', userAuthRoutes.postRegister);
+    server.post('/login', userAuthRoutes.postLogin);
+    server.get('/login', userAuthRoutes.getLogin);
     server.get('/', (req, res) => {
       res.send('Hello');
-    });
-
-    server.get('/login', (req, res) => {
-      console.log('fnfoiwe');
-      res.send('login');
     });
   }
 }

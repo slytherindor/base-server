@@ -1,12 +1,12 @@
+import {ApolloServer, gql} from 'apollo-server-express';
 import {Application} from 'express';
-import * as passport from 'passport';
-import * as userAuthRoutes from './routeHandlers/AuthRoutesHandlers';
-import logger from "./utils/logger";
-import {ApolloServer, gql} from "apollo-server-express";
 import * as fs from 'fs';
-import {BookGqlEndpoint} from "./graphql/endpoints/bookGqlEndpoint";
-import {GithubAPI} from "./graphql/datasources/githubAPI";
-import {PortfolioEndpoint} from "./graphql/endpoints/portfolioEndpoint";
+import * as passport from 'passport';
+import {GithubAPI} from './graphql/datasources/githubAPI';
+import {BookGqlEndpoint} from './graphql/endpoints/bookGqlEndpoint';
+import {PortfolioEndpoint} from './graphql/endpoints/portfolioEndpoint';
+import * as userAuthRoutes from './routeHandlers/AuthRoutesHandlers';
+import logger from './utils/logger';
 
 const express = require('express');
 
@@ -22,10 +22,12 @@ declare module 'express-session' {
 export class ExpressServerInitializer {
   public static app: Application;
   private static configExpressServer() {
-    logger.info("ExpressServerInitializer: Configuring server");
+    logger.info('ExpressServerInitializer: Configuring server');
     this.app = express();
     this.app.use(express.static('public'));
-    this.app.use(session({secret: 'cats', resave: true, saveUninitialized: true}));
+    this.app.use(
+      session({secret: 'cats', resave: true, saveUninitialized: true})
+    );
     this.app.use(bodyParser.urlencoded({extended: false}));
     this.app.use(bodyParser.json());
     this.app.use(passport.initialize());
@@ -49,7 +51,7 @@ export class ExpressServerInitializer {
   }
 
   private static setupExpressServerRoutes(): void {
-    logger.info("ExpressServerInitializer: Setting up routes on server");
+    logger.info('ExpressServerInitializer: Setting up routes on server');
     this.app.post('/signup', userAuthRoutes.postRegister);
     this.app.post('/login', userAuthRoutes.postLogin);
     this.app.get('/login', userAuthRoutes.getLogin);
@@ -78,14 +80,13 @@ export class ExpressServerInitializer {
       resolvers: this.resolvers,
       dataSources: () => {
         return {
-          githubAPI: new GithubAPI()
+          githubAPI: new GithubAPI(),
         };
       },
-      debug: false,
       context: ({req}) => ({req: req}),
     });
     const app = this.app;
-    gqlServer.applyMiddleware({ app });
+    gqlServer.applyMiddleware({app});
   }
 
   private static loadGraphqlSchema(): void {
@@ -103,7 +104,7 @@ export class ExpressServerInitializer {
   private static initResolvers() {
     logger.info('ExpressServerInitializer: Initializing graphql resolvers');
     const bookGqlEndpoint = new BookGqlEndpoint();
-    const portfolioEndpoint = new PortfolioEndpoint()
+    const portfolioEndpoint = new PortfolioEndpoint();
     this.resolvers = [portfolioEndpoint.initialize()];
   }
 }

@@ -5,15 +5,15 @@ import {IVerifyOptions} from 'passport-local';
 import '../config/server/passport';
 import {UserInterface} from '../database/models/User';
 import {AuthService} from '../services/authService';
-import logger from "../utils/logger";
+import logger from '../utils/logger';
 
 export const postRegister = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  logger.info("postRegister: Received signup request");
-  logger.info("postRegister: Validating request body");
+  logger.info('postRegister: Received signup request');
+  logger.info('postRegister: Validating request body');
   await check('email', 'Email is not valid').isEmail().run(req);
   await check('password', 'Password must be at least 4 characters long')
     .isLength({min: 4})
@@ -31,14 +31,17 @@ export const postRegister = async (
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    logger.error("postRegister: Request body validation failed. Will redirect to /register path.", errors);
+    logger.error(
+      'postRegister: Request body validation failed. Will redirect to /register path.',
+      errors
+    );
     req.flash(
       'errors',
       errors.array().map(error => error.msg)
     );
     return res.redirect('/register');
   }
-  logger.info("postRegister: Request body validation passed.")
+  logger.info('postRegister: Request body validation passed.');
   const user: Omit<UserInterface, 'id'> = {
     email: req.body.email,
     firstName: req.body.firstName,
@@ -66,8 +69,8 @@ export const postLogin = async (
   res: Response,
   next: NextFunction
 ) => {
-  logger.info("postLogin: Received login request");
-  logger.info("postLogin: Validating request body");
+  logger.info('postLogin: Received login request');
+  logger.info('postLogin: Validating request body');
   await check('email', 'Email is not valid').isEmail().run(req);
   await check('password', 'Password is not valid').notEmpty().run(req);
   await sanitize('email').normalizeEmail({gmail_remove_dots: false}).run(req);
@@ -75,14 +78,16 @@ export const postLogin = async (
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    logger.error("postLogin: Request body validation failed. Will redirect to /login path.");
+    logger.error(
+      'postLogin: Request body validation failed. Will redirect to /login path.'
+    );
     req.flash(
       'errors',
       errors.array().map(error => error.msg)
     );
     return res.redirect('/login');
   }
-  logger.info("postLogin: Request body validation passed.")
+  logger.info('postLogin: Request body validation passed.');
   passport.authenticate(
     'login-local',
     (err: Error, user: UserInterface, info: IVerifyOptions) => {

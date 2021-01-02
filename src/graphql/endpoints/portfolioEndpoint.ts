@@ -1,13 +1,13 @@
-import {GQLProject, GQLResolvers} from "../../generated/schema";
+import {GQLProject, GQLResolvers} from '../../generated/schema';
 
 export class PortfolioEndpoint {
-  public portFolioResolvers!: GQLResolvers
-  public  initialize() {
+  public portFolioResolvers!: GQLResolvers;
+  public initialize() {
     this.portFolioResolvers = {
       Query: {
-        repos: PortfolioEndpoint.getProjects
-      }
-    }
+        repos: PortfolioEndpoint.getProjects,
+      },
+    };
     return this.portFolioResolvers;
   }
 
@@ -15,9 +15,8 @@ export class PortfolioEndpoint {
     parent: any,
     args: any,
     context: any,
-    info: any,
+    info: any
   ): Promise<GQLProject[]> {
     return context.dataSources.githubAPI.getRepos();
   }
-
 }

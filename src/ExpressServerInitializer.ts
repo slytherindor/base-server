@@ -5,6 +5,8 @@ import logger from "./utils/logger";
 import {ApolloServer, gql} from "apollo-server-express";
 import * as fs from 'fs';
 import {BookGqlEndpoint} from "./graphql/endpoints/bookGqlEndpoint";
+import {GithubAPI} from "./graphql/datasources/githubAPI";
+import {PortfolioEndpoint} from "./graphql/endpoints/portfolioEndpoint";
 
 const express = require('express');
 
@@ -74,6 +76,11 @@ export class ExpressServerInitializer {
     const gqlServer = new ApolloServer({
       typeDefs: this.typeDefs,
       resolvers: this.resolvers,
+      dataSources: () => {
+        return {
+          githubAPI: new GithubAPI()
+        };
+      },
       debug: false,
       context: ({req}) => ({req: req}),
     });
@@ -96,6 +103,7 @@ export class ExpressServerInitializer {
   private static initResolvers() {
     logger.info('ExpressServerInitializer: Initializing graphql resolvers');
     const bookGqlEndpoint = new BookGqlEndpoint();
-    this.resolvers = [bookGqlEndpoint.initialize()];
+    const portfolioEndpoint = new PortfolioEndpoint()
+    this.resolvers = [portfolioEndpoint.initialize()];
   }
 }

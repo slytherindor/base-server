@@ -14,12 +14,21 @@ type User {
     name: String!
 }
 
+type Project {
+    name: String!
+    description: String!
+    language: String
+    repoUrl: String
+    updatedAt: String!
+}
+
 type Query {
     books: [Book!]!
     authors: [Author]
     users: [User]
     author: Author
     book(id: Int!): Book!
+    repos: [Project]!
 }
 
 type Mutation {

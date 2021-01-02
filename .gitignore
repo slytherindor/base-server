@@ -3,3 +3,4 @@ build
 .idea/
 graphql.schema.json
 *.log
+.env

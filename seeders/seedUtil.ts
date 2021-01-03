@@ -1,7 +1,7 @@
 // eslint-disable-next-line node/no-unpublished-import
 import * as faker from 'faker';
-import {AuthorInterface} from './models/Author';
-import {BookInterface} from './models/Book';
+import {AuthorInterface} from '../src/database/models/Author';
+import {BookInterface} from '../src/database/models/Book';
 
 export function createBooks(numberOfItems: number): BookInterface[] {
   const books: BookInterface[] = [];

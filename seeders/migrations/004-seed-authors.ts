@@ -1,4 +1,4 @@
-import {Migration} from '../migrator';
+import {Migration} from '../../src/database/migrator';
 import {createAuthors} from '../seedUtil';
 export const up: Migration = async ({context: sequelize}) => {
   const authors = createAuthors(10);

@@ -105,6 +105,6 @@ export class ExpressServerInitializer {
     logger.info('ExpressServerInitializer: Initializing graphql resolvers');
     const bookGqlEndpoint = new BookGqlEndpoint();
     const portfolioEndpoint = new PortfolioEndpoint();
-    this.resolvers = [portfolioEndpoint.initialize()];
+    this.resolvers = [bookGqlEndpoint.initialize()];
   }
 }

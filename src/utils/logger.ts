@@ -70,6 +70,11 @@ if (process.env.NODE_ENV !== 'production') {
   logger.debug('Logging initialized at debug level');
 }
 
-logger.info('This is a test message');
+if (process.env.NODE_ENV === 'test') {
+  logger.debug(
+    'Testing environment detected. Bringing log level down to error.'
+  );
+  logger.transports.forEach((item: {level: string}) => (item.level = 'error'));
+}
 
 export default logger;

@@ -1,7 +1,7 @@
 import {FindOptions, WhereOptions} from 'sequelize';
 import Book, {BookInterface} from '../database/models/Book';
 
-abstract class AbstractBookRepository {
+export abstract class AbstractBookRepository {
   abstract add(title: string, authorId: number): Promise<BookInterface>;
   abstract get(bookId: number): Promise<BookInterface>;
   abstract remove(bookId: number): Promise<Boolean>;
@@ -47,7 +47,6 @@ export class BookService {
   }
 
   getBookById(bookId: number): Promise<BookInterface> {
-    console.log('Service finding book.');
     return this.repository.get(bookId);
   }
 

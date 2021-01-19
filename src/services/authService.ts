@@ -2,10 +2,10 @@ import {DatabaseClient} from '../database/client';
 import User, {UserInterface} from '../database/models/User';
 import UserCredential from '../database/models/UserCredential';
 
-abstract class AbstractUserRepository {
+export abstract class AbstractUserRepository {
   abstract findUserWithCredential(
     identifier: string
-  ): Promise<UserInterface | null>;
+  ): Promise<User | null>;
   abstract createUser(
     user: Omit<UserInterface, 'id'>,
     credential: string
@@ -55,13 +55,17 @@ export class SequelizeUserRepository implements AbstractUserRepository {
 
 class AuthServiceError extends Error {}
 export class AuthService {
-  public static async verifyLoginFunc(
+  private repo: AbstractUserRepository;
+  constructor(userRepo: AbstractUserRepository) {
+    this.repo = userRepo;
+  }
+  public async verifyLoginFunc(
     username: string,
     password: string,
     done: Function
   ): Promise<void> {
     try {
-      const user = await new SequelizeUserRepository().findUserWithCredential(
+      const user = await this.repo.findUserWithCredential(
         username
       );
       if (!user) {
@@ -84,7 +88,7 @@ export class AuthService {
     credential: string
   ): Promise<UserInterface> {
     try {
-      return await new SequelizeUserRepository().createUser(user, credential);
+      return await this.repo.createUser(user, credential);
     } catch (e) {
       console.error(e);
       throw new AuthServiceError('Failed to register user.');

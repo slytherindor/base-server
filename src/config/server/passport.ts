@@ -18,8 +18,8 @@ passport.deserializeUser((id: number | string, done) => {
     })
     .catch(e => done(e, undefined));
 });
-
-passport.use('login-local', new Strategy(AuthService.verifyLoginFunc));
+const authService = new AuthService(new SequelizeUserRepository());
+passport.use('login-local', new Strategy(authService.verifyLoginFunc));
 
 /**
  * Login Required middleware.

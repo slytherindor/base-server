@@ -4,7 +4,7 @@ import * as passport from 'passport';
 import {IVerifyOptions} from 'passport-local';
 import '../config/server/passport';
 import {UserInterface} from '../database/models/User';
-import {AuthService} from '../services/authService';
+import {AuthService, SequelizeUserRepository} from '../services/authService';
 import logger from '../utils/logger';
 
 export const postRegister = async (
@@ -48,7 +48,7 @@ export const postRegister = async (
     lastName: req.body.lastName,
   };
 
-  const authService = new AuthService();
+  const authService = new AuthService(new SequelizeUserRepository());
   authService
     .registerUser(user, req.body.password)
     .then((user: UserInterface) => {

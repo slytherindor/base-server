@@ -11,7 +11,7 @@ export class SchemaRegistrar {
     logger.info('SchemaRegistrar: Initializing sequelize models');
     try {
       fs.readdirSync(`${__dirname}/models`).forEach((file: string) => {
-        if (Path.extname(file) === '.js') {
+        if (Path.extname(file) === '.js' || Path.extname(file) === '.ts') {
           this.models.push(file);
         }
       });

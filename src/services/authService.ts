@@ -3,9 +3,7 @@ import User, {UserInterface} from '../database/models/User';
 import UserCredential from '../database/models/UserCredential';
 
 export abstract class AbstractUserRepository {
-  abstract findUserWithCredential(
-    identifier: string
-  ): Promise<User | null>;
+  abstract findUserWithCredential(identifier: string): Promise<User | null>;
   abstract createUser(
     user: Omit<UserInterface, 'id'>,
     credential: string
@@ -65,9 +63,7 @@ export class AuthService {
     done: Function
   ): Promise<void> {
     try {
-      const user = await this.repo.findUserWithCredential(
-        username
-      );
+      const user = await this.repo.findUserWithCredential(username);
       if (!user) {
         done(null, false, {message: 'Incorrect username'});
         return;

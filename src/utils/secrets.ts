@@ -23,3 +23,10 @@ if (!GITHUB_TOKEN) {
   logger.error('Secrets: No Github token provided.');
   process.exit(1);
 }
+
+export const CRED_SALT = process.env['CRED_SALT'];
+
+if (!CRED_SALT) {
+  logger.error('Secrets: No salt was provided for credentials provided.');
+  process.exit(1);
+}

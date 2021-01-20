@@ -2,6 +2,7 @@ import {DataTypes, Model, Optional} from 'sequelize';
 import logger from '../../utils/logger';
 import {DatabaseClient} from '../client';
 import User from './User';
+import {CRED_SALT} from "../../utils/secrets";
 const bcrypt = require('bcrypt');
 
 export interface UserCredentialInterface {
@@ -69,10 +70,7 @@ export default class UserCredential
   }
 
   public static encryptCredential(enteredCredential: string): Promise<string> {
-    const salt = process.env.CREDSALT
-      ? process.env.CREDSALT
-      : '$2a$10$6IIEKeb5QQrYXL3txzIjYO';
-    return bcrypt.hash(enteredCredential, salt);
+    return bcrypt.hash(enteredCredential, CRED_SALT);
   }
 
   public async validPassword(enteredCredential: string): Promise<boolean> {

@@ -107,7 +107,7 @@ export class StorareUserRepository extends AbstractUserRepository {
   findUserWithCredential(identifier: string): Promise<User | null> {
     return new Promise<User | null>((resolve, reject) => {
       const user = Object.values(this.users).filter(
-        user => user.email == identifier
+        user => user.email === identifier
       );
       if (user && this.userCredentials[user[0].id]) {
         // @ts-ignore

@@ -1,8 +1,8 @@
 import {DataTypes, Model, Optional} from 'sequelize';
 import logger from '../../utils/logger';
+import {CRED_SALT} from '../../utils/secrets';
 import {DatabaseClient} from '../client';
 import User from './User';
-import {CRED_SALT} from "../../utils/secrets";
 const bcrypt = require('bcrypt');
 
 export interface UserCredentialInterface {

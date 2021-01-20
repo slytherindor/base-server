@@ -21,6 +21,7 @@ export const GITHUB_TOKEN = process.env['GITHUB_TOKEN'];
 
 if (!GITHUB_TOKEN) {
   logger.error('Secrets: No Github token provided.');
+  // eslint-disable-next-line no-process-exit
   process.exit(1);
 }
 
@@ -28,5 +29,6 @@ export const CRED_SALT = process.env['CRED_SALT'];
 
 if (!CRED_SALT) {
   logger.error('Secrets: No salt was provided for credentials provided.');
+  // eslint-disable-next-line no-process-exit
   process.exit(1);
 }

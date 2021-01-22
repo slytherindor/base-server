@@ -2,34 +2,33 @@ os: linux
 dist: xenial
 language: node_js
 node_js:
-- 15
+  - 15
 services:
-- docker
+  - docker
 cache:
   directories:
   - node_modules
 before_deploy:
-- curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-- unzip awscliv2.zip
-- sudo ./aws/install
-- rm -rf aws*
-- export PATH=$PATH:$HOME/.local/bin
-- sudo apt-get install jq
+  - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  - unzip awscliv2.zip
+  - sudo ./aws/install
+  - rm -rf aws*
+  - export PATH=$PATH:$HOME/.local/bin
+  - sudo apt-get install jq
 install:
-- npm install
+  - npm install
 script:
-- npm run lint
-- npm run test
-- npm run build
+  - npm run lint
+  - npm run test
+  - npm run build
 deploy:
   skip_cleanup: true
   provider: script
   script:
   - docker build --tag slytherindor/${REPOSITORY_NAME} .
-  - docker tag slytherindor/express-node-app 530678340229.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY_NAME}
+  - docker tag slytherindor/${REPOSITORY_NAME} 530678340229.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY_NAME}
   - bash deploy/scripts/deploy.sh
-  - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin
-    530678340229.dkr.ecr.us-east-1.amazonaws.com
+  - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 530678340229.dkr.ecr.us-east-1.amazonaws.com
   - docker push 530678340229.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY_NAME}:latest
   on:
     branch: main

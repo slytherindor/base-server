@@ -10,9 +10,7 @@
     "compile": "tsc",
     "fix": "gts fix",
     "dev": "nodemon --watch src/index.ts",
-    "prepare": "npm run compile && npm run copy-gql-schema-build",
-    "pretest": "npm run compile",
-    "posttest": "npm run lint",
+    "build": "npm run compile && npm run copy-gql-schema-build",
     "generate-gql-types": "graphql-codegen --config codegen.yml",
     "copy-gql-schema-build": "cp src/graphql/schema.graphql build/src/graphql"
   },

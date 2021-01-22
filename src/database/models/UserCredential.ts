@@ -3,7 +3,7 @@ import logger from '../../utils/logger';
 import {CRED_SALT} from '../../utils/secrets';
 import {DatabaseClient} from '../client';
 import User from './User';
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 export interface UserCredentialInterface {
   id: number;

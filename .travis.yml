@@ -1,0 +1,40 @@
+os: linux
+dist: xenial
+language: node_js
+node_js:
+- 15
+services:
+- docker
+cache:
+  directories:
+  - node_modules
+before_deploy:
+- curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+- unzip awscliv2.zip
+- sudo ./aws/install
+- rm -rf aws*
+- export PATH=$PATH:$HOME/.local/bin
+- sudo apt-get install jq
+install:
+- npm install
+script:
+- npm run lint
+- npm run test
+- npm run build
+deploy:
+  skip_cleanup: true
+  provider: script
+  script:
+  - docker build --tag slytherindor/${REPOSITORY_NAME} .
+  - docker tag slytherindor/express-node-app 530678340229.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY_NAME}
+  - bash deploy/scripts/deploy.sh
+  - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin
+    530678340229.dkr.ecr.us-east-1.amazonaws.com
+  - docker push 530678340229.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY_NAME}:latest
+  on:
+    branch: main
+env:
+  global:
+  - REPOSITORY_NAME=base-server
+  - secure: dzRNLqgHjubSJND3E5lIboKytO2tErtqEvU+tCE5OzwEpr4q5PKSLnIRQjfT5y+JgJPkbPYux1CBInb/sZIUckocpCFhyx/lXhsRWVdIk8DEZKcGFUFXlcBWkI5haSpYXjxkXqbpbxc6C8j0lB6x1gt0I5I9nfgHKtha1O4l9n6a+JEgjFwe7HYP5WbXd2aQoaKlS/idCX6AR8JGfkqAWx31zlz20SQkOjzqa8vdWivyDY0X2YyRHF8sdj5bKqPq5xcM+C+xhvpLZIjM4FVCkIK1LFSz67RBmQ70SIiYPYe3yQ56gxsFXnb9f2lx8emvpHnEQSeIieyERRUsVWu/vhzv/+gPmQprfXjOeTfS9HAf/dnFvqpj2HK5ThXvR1QBA3uz9Vj9wBHtT9NwpHUM9YeZwVVgN2JmwAlOU6cynJ84tWJBDEWWbJybL1q9NOw+nM811+yqv33CpwukrMZTGuewH3B7jWOizx8NDexvrcBIecRKG5Yi9UPo4BfNGqLu5hAmpgdXKS19jYHko49Htai2SnXUFej9qUzm3ZrqvVjPRvn/lwRtJLUMlJq4xQswHuQQf40MXCP54RVauitt20rjaH1ndi4LXzqdjtyiHOIq8PZ11qssnsGLDLemjx6hTSzYWUE7vciLJgladH4ykBkeWXrQp3s5l0vPb/hrfg4=
+  - secure: hPkaUXbwgPamlKSVtkUD1KzKG4zFYVuQ1FgnslAqo08KV0qzQreMAX32nLaVEhwTxCOtV1qPOvI+kxgzjT2ZNURZ7lJy8sJNCKJrxoDhAWfRttfjuZFlCuch62EcRHK0IpaVW+8aJOb9GVQ2cS0H4wBzTvRKZeGZOj9bQ5wUQETZ8YBM5An561Q7935pijhd85vsTBqx/KC1C4CFYBwvqfvcMhToMUpRJ6RFcXMwCRnTb6g7ahu4trlvFeAlRKYJWYEiPEs0m68zQdaQzhPY21LabFByLrqfzL9xSkEPalwVM7gnol6VF3tQVEtGLTF1oUub/7r0QJI70x0mEwFk/b3MZ4lbZQJz2c3Ak5LJTdunAykiy2npiQNsCEZfUvUaCfYqtgXp/m44xP6RE430W1gBRTXLCu9Y5EolKApLFpkJe/DDNsmGSW21TF5ZK7VmATIF/2UKCTPKyFrjpgmoLMbss43Y0dAUPIP7VZqxYIQKL7f9xVFUz8sTvNBry88P2LvxmlpvACT13iBAK9OLLwI+PC7IKHlkRngmhObxy2aqgoFBQrIqcGOmYr4EhCeWHfAL7nlmo+RDhkt9GhNIpIvexNa73W8kh0cXvYYN1Qzdr41ffGvNp3iV9YwL8FipphNE8aB/GNjdR0eD8zFkfMSVwSFzXTpLLgn5VpAe0Z0=

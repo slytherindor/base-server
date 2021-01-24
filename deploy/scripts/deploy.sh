@@ -12,3 +12,13 @@ else
         echo "Something went wrong"
     fi
 fi
+
+echo "Building docker image."
+docker build --tag slytherindor/${REPOSITORY_NAME} .
+echo "Tagging docker image."
+docker tag slytherindor/${REPOSITORY_NAME} 530678340229.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY_NAME}
+echo "Logging in AWS ECR."
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 530678340229.dkr.ecr.us-east-1.amazonaws.com
+echo "Pushing to AWS ECR"
+docker push 530678340229.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY_NAME}:latest
+exit $?

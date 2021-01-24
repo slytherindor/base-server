@@ -3,7 +3,6 @@ import {Application} from 'express';
 import * as fs from 'fs';
 import * as passport from 'passport';
 import {GithubAPI} from './graphql/datasources/githubAPI';
-import {BookGqlEndpoint} from './graphql/endpoints/bookGqlEndpoint';
 import {PortfolioEndpoint} from './graphql/endpoints/portfolioEndpoint';
 import * as userAuthRoutes from './routeHandlers/AuthRoutesHandlers';
 import logger from './utils/logger';
@@ -62,7 +61,6 @@ export class ExpressServerInitializer {
 
   public static start(port: number) {
     this.configExpressServer();
-    this.setupExpressServerRoutes();
     this.configGraphqlServer();
     this.app.listen(port, () => {
       logger.info(`ExpressServerInitializer: 🚀 Server ready at ${port}`);
@@ -103,8 +101,7 @@ export class ExpressServerInitializer {
 
   private static initResolvers() {
     logger.info('ExpressServerInitializer: Initializing graphql resolvers');
-    const bookGqlEndpoint = new BookGqlEndpoint();
     const portfolioEndpoint = new PortfolioEndpoint();
-    this.resolvers = [bookGqlEndpoint.initialize()];
+    this.resolvers = [portfolioEndpoint.initialize()];
   }
 }

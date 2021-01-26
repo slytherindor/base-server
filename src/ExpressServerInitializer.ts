@@ -4,7 +4,6 @@ import * as fs from 'fs';
 import * as passport from 'passport';
 import {GithubAPI} from './graphql/datasources/githubAPI';
 import {PortfolioEndpoint} from './graphql/endpoints/portfolioEndpoint';
-import * as userAuthRoutes from './routeHandlers/AuthRoutesHandlers';
 import logger from './utils/logger';
 
 const express = require('express');
@@ -51,16 +50,15 @@ export class ExpressServerInitializer {
 
   private static setupExpressServerRoutes(): void {
     logger.info('ExpressServerInitializer: Setting up routes on server');
-    this.app.post('/signup', userAuthRoutes.postRegister);
-    this.app.post('/login', userAuthRoutes.postLogin);
-    this.app.get('/login', userAuthRoutes.getLogin);
     this.app.get('/', (req, res) => {
       res.send('Hello');
     });
   }
 
   public static start(port: number) {
-    this.configExpressServer();
+    this.app = express();
+    this.app.use(express.static('public'));
+    // this.configExpressServer();
     this.configGraphqlServer();
     this.app.listen(port, () => {
       logger.info(`ExpressServerInitializer: 🚀 Server ready at ${port}`);

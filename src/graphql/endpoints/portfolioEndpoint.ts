@@ -1,5 +1,5 @@
 import {GQLProject, GQLResolvers} from '../../generated/schema';
-import logger from "../../utils/logger";
+import logger from '../../utils/logger';
 
 export class PortfolioEndpoint {
   public portFolioResolvers!: GQLResolvers;

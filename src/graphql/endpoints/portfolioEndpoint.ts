@@ -1,4 +1,5 @@
 import {GQLProject, GQLResolvers} from '../../generated/schema';
+import logger from "../../utils/logger";
 
 export class PortfolioEndpoint {
   public portFolioResolvers!: GQLResolvers;
@@ -17,6 +18,7 @@ export class PortfolioEndpoint {
     context: any,
     info: any
   ): Promise<GQLProject[]> {
+    logger.info('Resolving graphql request to get repos');
     return context.dataSources.githubAPI.getRepos();
   }
 }

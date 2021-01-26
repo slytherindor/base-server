@@ -15,7 +15,11 @@ if (fs.existsSync('.env')) {
 }
 
 export const ENVIRONMENT = process.env.NODE_ENV;
-const prod = ENVIRONMENT === 'production'; // Anything else is treated as 'dev'
+export const prod = ENVIRONMENT === 'production'; // Anything else is treated as 'dev'
+export const CLIENT_PATH = process.env['CLIENT_PATH'];
+if (!CLIENT_PATH) {
+  logger.error('Secrets: No client path was provided');
+}
 
 export const GITHUB_TOKEN = process.env['GITHUB_TOKEN'];
 

@@ -56,7 +56,7 @@ const myFormat = winston.format.combine(
 const options: LoggerOptions = {
   transports: [
     new winston.transports.Console({
-      level: process.env.NODE_ENV === 'production' ? 'error' : 'debug',
+      level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
     }),
     new winston.transports.File({filename: 'debug.log', level: 'debug'}),
   ],

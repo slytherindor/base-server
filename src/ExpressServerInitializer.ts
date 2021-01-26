@@ -2,11 +2,11 @@ import {ApolloServer, gql} from 'apollo-server-express';
 import {Application} from 'express';
 import * as fs from 'fs';
 import * as passport from 'passport';
+import * as path from 'path';
+import {clientBuildDir} from './config/server/client';
 import {GithubAPI} from './graphql/datasources/githubAPI';
 import {PortfolioEndpoint} from './graphql/endpoints/portfolioEndpoint';
 import logger from './utils/logger';
-import * as path from "path";
-import {clientBuildDir} from "./config/server/client";
 
 const express = require('express');
 

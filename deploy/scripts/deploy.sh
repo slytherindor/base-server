@@ -7,6 +7,8 @@
 # BUCKET_NAME - AWS S3 bucket to fetch web client build
 
 # TODO: Use getopt to pass above variables as args.
+
+set -e
 REPOSITORY_EXISTS=$(aws ecr describe-repositories --repository-names=${REPOSITORY_NAME} --region=us-east-1 | jq -r ".repositories[].repositoryName")
 if [ ! -z ${REPOSITORY_EXISTS} ] && [ ${REPOSITORY_EXISTS} == ${REPOSITORY_NAME} ]; then
     echo "The AWS ECR repository ${REPOSITORY_NAME} exists"
@@ -31,3 +33,4 @@ echo "Logging in AWS ECR."
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 530678340229.dkr.ecr.us-east-1.amazonaws.com
 echo "Pushing to AWS ECR"
 docker push 530678340229.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY_NAME}:latest
+set +e

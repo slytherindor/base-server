@@ -26,12 +26,12 @@ export class GithubAPI extends RESTDataSource {
   async getRepos(): Promise<GQLProject[]> {
     try {
       logger.info('GithubAPI:getRepos: Fetching repos from GitHub.');
-      let repos = await this.get('user/repos');
-      repos = repos.filter((data: any) => data.name.toLowerCase() in projects);
+      let repos = await this.get('user/repos?per_page=100');
+      repos = repos.filter((data: any) => data.name in projects);
       logger.info('GithubAPI:getRepos: Returning repos.');
       return repos.map((data: any) => {
         const prj: GQLProject = {
-          name: data.name,
+          name: projects[data.name].properName,
           description: data.description ? data.description : '',
           language: data.language,
           repoUrl: data.html_url,

@@ -1,30 +1,30 @@
 export interface IGithubProject {
-  properName: string
+  properName: string;
 }
 const projects: Record<string, IGithubProject> = {
-  "base-server": {
-    properName: "Base Server"
+  'base-server': {
+    properName: 'Base Server',
   },
   'personal-portfolio-website': {
-    properName: "This Website"
+    properName: 'This Website',
   },
-  "starPrintIntegration": {
-    properName: "Printer iOS integration"
+  starPrintIntegration: {
+    properName: 'Printer iOS integration',
   },
-  "Virajment": {
-    properName: "Python form application"
+  Virajment: {
+    properName: 'Python form application',
   },
-  "binance-order-placer": {
-    properName: "Binance Order Bot"
+  'binance-order-placer': {
+    properName: 'Binance Order Bot',
   },
   'AIND-sudoku': {
-    properName: "Sudoku Solver"
+    properName: 'Sudoku Solver',
   },
   'aws-base-infra': {
-    properName: "AWS Base VPC template"
+    properName: 'AWS Base VPC template',
   },
   'stream-adventure': {
-    properName: 'NodeJS Streams playground'
-  }
+    properName: 'NodeJS Streams playground',
+  },
 };
 export default projects;
